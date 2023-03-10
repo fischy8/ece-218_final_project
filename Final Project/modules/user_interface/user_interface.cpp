@@ -60,6 +60,7 @@ static void shadesButtonCallback();
 
 //=====[Implementations of public functions]===================================
 
+//initialize the buttons in the correct state to debounce correctly
 void debounceButtonInit()
 {
 
@@ -79,6 +80,7 @@ if( !shadesButton ) {
     }
 }
 
+//finite state machine to debounce the lights toggle button
 bool lightsDebounceButtonUpdate()
 {
     bool lightsButtonReleasedEvent = false;
@@ -125,6 +127,7 @@ bool lightsDebounceButtonUpdate()
     return lightsButtonReleasedEvent;
 }
 
+//finite state machine to debounce the shades toggle button
 bool shadesDebounceButtonUpdate()
 {
     bool shadesButtonReleasedEvent = false;
@@ -176,6 +179,7 @@ void userInterfaceInit()
     userInterfaceDisplayInit();
 }
 
+//update the display and the mode of the switches (automatic or manual)
 void userInterfaceUpdate()
 {
     modeUpdate();
@@ -184,6 +188,7 @@ void userInterfaceUpdate()
 
 //=====[Implementations of private functions]==================================
 
+//initialize the display, servo, and motion sensor
 static void userInterfaceDisplayInit()
 {
     displayInit();
@@ -195,8 +200,12 @@ static void userInterfaceDisplayInit()
     displayStringWrite( "MOTION" );
 }
 
+//toggles the lights and shades in manual mode
+//updates the display to show day/night and motion detected/ceased
+//uses PIR to toggle lights and LDR to oggle shades in automatic mode
 static void userInterfaceDisplayUpdate()
 {
+    //manual mode logic
     static int accumulatedDisplayTime = 0;
     
     if (!lightsAutoMode) {
@@ -222,7 +231,8 @@ static void userInterfaceDisplayUpdate()
             shadesAreOpen = OFF;
         }
     }
-
+    
+    //update display and automatic mode logic
     if( accumulatedDisplayTime >=
         DISPLAY_REFRESH_TIME_MS ) {
 
@@ -267,6 +277,7 @@ static void userInterfaceDisplayUpdate()
     } 
 }
 
+//checks switches to turn automatic mode on or off
 static void modeUpdate() {
     if (lightsSwitch){
         lightsAutoMode = OFF;
